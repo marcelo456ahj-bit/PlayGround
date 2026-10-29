@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#050b12">
+<meta name="description" content="PES 2027 Stickman 2D — futebol completo, carreiras, campeonatos e multiplayer local.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>PES 2027 · Stickman 2D</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="ambient" aria-hidden="true">
+  <div class="ambient-glow a"></div>
+  <div class="ambient-glow b"></div>
+  <div class="ambient-grid"></div>
+</div>
+<div id="app">
+  <header id="topbar" class="topbar hidden">
+    <button class="icon-btn" data-action="back" aria-label="Voltar">
+      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="brand-mini">
+      <span class="brand-ball"></span>
+      <span class="brand-word">PES <b>2027</b></span>
+      <span class="brand-tag">STICKMAN 2D</span>
+    </div>
+    <div class="topbar-right">
+      <div class="coin-pill" title="Moedas da carreira">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10h5M9.5 14h5"/></svg>
+        <span id="coin-value">0</span>
+      </div>
+      <button class="icon-btn" data-action="options" aria-label="Opções">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.6v.2h-4v-.2a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.6-1H2.8v-4H3a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 001.9.3 1.7 1.7 0 001-1.6v-.2h4V3a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 00-.3 1.9 1.7 1.7 0 001.6 1h.2v4H21a1.7 1.7 0 00-1.6 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="screen" class="screen" aria-live="polite"></main>
+
+  <nav id="bottomnav" class="bottomnav hidden" aria-label="Navegação principal">
+    <button data-action="menu" data-nav="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-5v-6H10v6H5a1 1 0 01-1-1z"/></svg><span>Início</span></button>
+    <button data-action="competitions" data-nav="comps"><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 01-8 0z"/><path d="M8 6H5v2a3 3 0 003 3M16 6h3v2a3 3 0 01-3 3M12 13v4M8 21h8M9 17h6"/></svg><span>Competições</span></button>
+    <button data-action="play" data-nav="play"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 5-4 5-4-5z"/></svg><span>Jogar</span></button>
+    <button data-action="master" data-nav="career"><svg viewBox="0 0 24 24"><path d="M4 20V9l8-5 8 5v11M8 20v-6h8v6M4 20h16"/></svg><span>Carreira</span></button>
+    <button data-action="extras" data-nav="extras"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.6 9.1l5.8-.8z"/></svg><span>Extras</span></button>
+  </nav>
+
+  <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true"></div>
+  <div id="toast" class="toast" aria-live="assertive"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/render.js"></script>
+<script src="js/game.js"></script>
+<script src="js/match.js"></script>
+<script src="js/career.js"></script>
+</body>
+</html>
