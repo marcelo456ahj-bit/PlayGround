@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#07110c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="PES 2027 STICKMAN 2D — futebol completo com carreira, ligas, copas, transferências e partidas em tempo real." />
+    <title>PES 2027 STICKMAN 2D</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307110c'/%3E%3Cpath d='M32 7 54 15v15c0 13-9 21-22 27C19 51 10 43 10 30V15Z' fill='%23d6ff3f'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Arial' font-size='17' font-weight='700' fill='%2307110c'%3EPES%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./match.css" />
+  </head>
+  <body>
+    <div id="boot" class="boot">
+      <div class="boot-glow"></div>
+      <div class="boot-crest">
+        <span>PES</span>
+        <small>27</small>
+      </div>
+      <div class="boot-title">STICKMAN <b>2D</b></div>
+      <div class="boot-sub">A nova geração do futebol de bolso</div>
+      <div class="boot-bar"><i></i></div>
+      <div class="boot-foot">TOQUE PARA ENTRAR</div>
+    </div>
+
+    <div id="app" class="app-shell">
+      <header class="topbar">
+        <button id="menuToggle" class="icon-btn only-mobile" aria-label="Menu">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+        <div class="brand" data-go="home">
+          <div class="brand-crest"><span>PES</span><small>27</small></div>
+          <div class="brand-copy">
+            <strong>STICKMAN <em>2D</em></strong>
+            <span>FOOTBALL EVOLVED</span>
+          </div>
+        </div>
+        <div class="topbar-center">
+          <div class="season-pill"><i></i> TEMPORADA 2027</div>
+          <div class="top-ticker" id="newsTicker">Bem-vindo ao centro de comando do futebol mundial.</div>
+        </div>
+        <div class="profile-strip">
+          <div class="profile-coins" id="profileCoins">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M9.5 9.5h5M9.5 14.5h5M12 8v8" /></svg>
+            <span>0</span>
+          </div>
+          <div class="profile-level">
+            <span id="profileLevel">NÍVEL 1</span>
+            <div class="level-track"><i id="levelProgress"></i></div>
+          </div>
+          <button id="profileBtn" class="avatar-btn" aria-label="Perfil">
+            <span>M</span>
+            <i></i>
+          </button>
+          <button id="settingsBtn" class="icon-btn" aria-label="Configurações">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4v-.2a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="app-body">
+        <aside class="sidebar" id="sidebar">
+          <nav id="mainNav" class="main-nav"></nav>
+          <div class="sidebar-card">
+            <span class="eyebrow">DESAFIO DIÁRIO</span>
+            <strong>Vença por 2 gols</strong>
+            <p>Recompensa: 450 moedas</p>
+            <div class="mini-progress"><i style="width: 64%"></i></div>
+            <button class="text-btn" data-go="quick">Jogar agora</button>
+          </div>
+          <div class="sidebar-foot">
+            <span class="online-dot"></span> SISTEMA ONLINE
+            <small>v27.1.0</small>
+          </div>
+        </aside>
+
+        <main class="view" id="view" tabindex="-1"></main>
+      </div>
+    </div>
+
+    <section id="matchScreen" class="match-screen hidden" aria-label="Partida">
+      <canvas id="matchCanvas"></canvas>
+      <div class="match-vignette"></div>
+      <div class="match-hud">
+        <div class="scoreboard">
+          <div class="score-team home">
+            <div class="badge" id="hudHomeBadge">FLA</div>
+            <div class="team-meta"><strong id="hudHomeName">Flamengo</strong><span id="hudHomeStyle">4-3-3</span></div>
+          </div>
+          <div class="score-center">
+            <div class="score-line"><span id="hudHomeScore">0</span><i>:</i><span id="hudAwayScore">0</span></div>
+            <div class="clock" id="hudClock">00:00</div>
+            <div class="half-tag" id="hudHalf">1º TEMPO</div>
+          </div>
+          <div class="score-team away">
+            <div class="team-meta"><strong id="hudAwayName">Palmeiras</strong><span id="hudAwayStyle">4-4-2</span></div>
+            <div class="badge" id="hudAwayBadge">PAL</div>
+          </div>
+        </div>
+        <div class="hud-actions">
+          <button id="matchAudioBtn" class="hud-icon" aria-label="Áudio">
+            <svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></svg>
+          </button>
+          <button id="pauseBtn" class="hud-icon" aria-label="Pausar">
+            <svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14" /></svg>
+          </button>
+        </div>
+        <div class="hud-stats">
+          <div class="stat-line"><span id="statPossessionHome">50%</span><div class="stat-track"><i id="possessionBar"></i></div><span id="statPossessionAway">50%</span></div>
+          <div class="stat-caption">POSSE DE BOLA</div>
+          <div class="stat-mini"><span id="statShots">0-0</span><small>FINALIZAÇÕES</small><span id="statFouls">0-0</span></div>
+        </div>
+        <div class="stamina-panel">
+          <span id="staminaLabel">ENERGIA 100</span>
+          <div class="stamina-track"><i id="staminaBar"></i></div>
+          <div class="power-track"><i id="powerBar"></i></div>
+        </div>
+      </div>
+
+      <div class="commentary-bar">
+        <span class="live-dot"></span>
+        <div id="commentaryText">A bola rola no gramado.</div>
+        <span id="controlledName">CONTROLE: —</span>
+      </div>
+
+      <div id="matchMessage" class="match-message hidden"></div>
+      <div id="countdown" class="countdown hidden">3</div>
+      <div id="replayBadge" class="replay-badge hidden">REPLAY <span>SLOW MOTION</span></div>
+
+      <div id="touchLayer" class="touch-layer">
+        <div id="joystick" class="joystick">
+          <div class="joystick-ring"></div>
+          <div id="joystickKnob" class="joystick-knob"></div>
+          <span class="joystick-label">MOVER</span>
+        </div>
+        <div class="action-pad">
+          <button class="action-btn pass" data-action="pass"><b>PASSE</b><small>A</small></button>
+          <button class="action-btn shoot" data-action="shoot"><b>CHUTE</b><small>SEGURE</small><i class="charge-ring"></i></button>
+          <button class="action-btn sprint" data-action="sprint"><b>CORRER</b><small>SEGURE</small></button>
+          <button class="action-btn tackle" data-action="tackle"><b>CARRINHO</b><small>L</small></button>
+          <button class="action-btn skill" data-action="skill"><b>DRIBLE</b><small>I</small></button>
+        </div>
+        <div id="p2Pad" class="p2-pad hidden">
+          <span>P2</span>
+          <div class="p2-keys"><i>WASD</i><i>SETAS</i><i>VÍRGULA</i><i>PONTO</i></div>
+        </div>
+      </div>
+
+      <div id="pauseOverlay" class="match-overlay hidden">
+        <div class="overlay-card pause-card">
+          <span class="eyebrow">JOGO PAUSADO</span>
+          <h2>Pausa técnica</h2>
+          <p id="pauseSubtitle">Ajuste sua equipe ou volte para o campo.</p>
+          <div class="pause-grid">
+            <button class="menu-action" id="resumeBtn"><span>Continuar partida</span><small>Voltar ao jogo</small></button>
+            <button class="menu-action" id="tacticsBtn"><span>Escalação e táticas</span><small>Formação, postura e substituições</small></button>
+            <button class="menu-action" id="cameraBtn"><span>Trocar câmera</span><small id="cameraLabel">Transmissão</small></button>
+            <button class="menu-action" id="forfeitBtn"><span>Sair da partida</span><small>Resultado será encerrado</small></button>
+          </div>
+          <div class="pause-hint">Dica: segure CHUTE para finalizar com mais força. Use o joystick para mirar.</div>
+        </div>
+      </div>
+
+      <div id="halfOverlay" class="match-overlay hidden">
+        <div class="overlay-card half-card">
+          <span class="eyebrow">INTERVALO</span>
+          <h2 id="halfScore">0 : 0</h2>
+          <div id="halfStats" class="half-stats"></div>
+          <div class="half-actions">
+            <button id="secondHalfBtn" class="primary-btn">Iniciar segundo tempo</button>
+            <button id="halfSubBtn" class="ghost-btn">Fazer substituições</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="goalOverlay" class="goal-overlay hidden">
+        <div class="goal-sweep"></div>
+        <span class="goal-kicker" id="goalKicker">GOLAÇO</span>
+        <h1>GOL<span>!</span></h1>
+        <div class="goal-scorer" id="goalScorer">Jogador</div>
+        <div class="goal-assist" id="goalAssist"></div>
+        <button id="skipReplayBtn" class="ghost-btn goal-skip">Pular replay</button>
+      </div>
+
+      <div id="fulltimeOverlay" class="match-overlay hidden">
+        <div class="overlay-card fulltime-card">
+          <span class="eyebrow">APITO FINAL</span>
+          <h2 id="fulltimeScore">0 : 0</h2>
+          <div class="fulltime-teams" id="fulltimeTeams"></div>
+          <div id="fulltimeStats" class="fulltime-stats"></div>
+          <div class="reward-row" id="rewardRow"></div>
+          <button id="fulltimeBtn" class="primary-btn">Ver resumo da partida</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="modalRoot" class="modal-root hidden"></div>
+    <div id="toast" class="toast"></div>
+    <div id="rotateNotice" class="rotate-notice">
+      <div class="rotate-icon">
+        <svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2" /><path d="M9 18h6" /></svg>
+      </div>
+      <strong>Gire o dispositivo</strong>
+      <span>Para uma experiência de jogo completa, use o modo paisagem.</span>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "pes-2027-stickman-2d",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check src/data.js && node --check src/audio.js && node --check src/match-utils.js && node --check src/match-actions.js && node --check src/match-ai.js && node --check src/match-render.js && node --check src/stadium.js && node --check src/match.js && node --check src/main.js"
+  }
+}
