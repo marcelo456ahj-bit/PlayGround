@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#050714">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Pac-Man — Neon Arcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23ffe45f'/%3E%3Cpath d='M32 32 L64 16 A28 28 0 0 0 64 48 Z' fill='%23050814'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div id="app">
+    <header class="hud">
+      <div class="brand" aria-label="Pac-Man Neon Arcade">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">PAC<span>-</span>MAN</span>
+        <span class="brand-sub">NEON ARCADE</span>
+      </div>
+      <div class="scoreboard">
+        <div class="score-block">
+          <span class="score-label">SCORE</span>
+          <strong id="score">000000</strong>
+        </div>
+        <div class="score-block high-block">
+          <span class="score-label">HIGH</span>
+          <strong id="highScore">000000</strong>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button id="soundBtn" class="icon-btn" type="button" aria-label="Toggle sound" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-8v2.1a6.5 6.5 0 0 1 0 11.8V20a8.5 8.5 0 0 0 0-16Z"/></svg>
+        </button>
+        <button id="pauseBtn" class="icon-btn" type="button" aria-label="Pause game">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7V5Zm6 0h4v14h-4V5Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <div id="gameShell" class="game-shell">
+        <canvas id="game" aria-label="Pac-Man maze"></canvas>
+        <div class="scanlines" aria-hidden="true"></div>
+        <div class="glass-edge" aria-hidden="true"></div>
+
+        <div id="overlay" class="overlay is-visible">
+          <div class="overlay-inner">
+            <div class="kicker"><span></span> ARCADE CLASSIC <span></span></div>
+            <h1 class="logo" aria-label="Pac-Man">
+              <span class="logo-pac" aria-hidden="true"></span>
+              <span class="logo-text">PAC-MAN</span>
+            </h1>
+            <p class="tagline">CHASE. CHOMP. CHAIN.</p>
+            <div class="cast" aria-hidden="true">
+              <span class="cast-pac"></span>
+              <span class="cast-dot"></span>
+              <span class="cast-ghost ghost-red"></span>
+              <span class="cast-ghost ghost-pink"></span>
+              <span class="cast-ghost ghost-cyan"></span>
+              <span class="cast-ghost ghost-orange"></span>
+            </div>
+            <button id="primaryBtn" class="primary-btn" type="button" aria-label="Play">
+              <span class="btn-glow"></span>
+              <span class="btn-label">PLAY</span>
+              <span class="btn-arrow" aria-hidden="true">▶</span>
+            </button>
+            <p id="overlayMeta" class="overlay-meta">SWIPE THE MAZE OR USE THE D-PAD</p>
+            <div class="tips">
+              <span><b>◉</b> POWER PELLET</span>
+              <span><b>↗</b> TILT OPTIONAL</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <div id="levelBanner" class="level-banner" aria-hidden="true">
+          <span>LEVEL</span>
+          <strong id="levelBannerNum">01</strong>
+        </div>
+      </div>
+    </main>
+
+    <footer class="controls">
+      <div class="lives-panel">
+        <span class="micro-label">LIVES</span>
+        <div id="lives" class="lives" aria-label="3 lives"></div>
+        <span id="levelLabel" class="level-chip">LVL 01</span>
+      </div>
+
+      <div class="dpad" aria-label="Direction controls">
+        <button class="dpad-btn dpad-up" data-dir="up" type="button" aria-label="Move up">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 7 6 7H6l6-7Z"/></svg>
+        </button>
+        <button class="dpad-btn dpad-left" data-dir="left" type="button" aria-label="Move left">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 12 7-6v12L7 12Z"/></svg>
+        </button>
+        <span class="dpad-core" aria-hidden="true"></span>
+        <button class="dpad-btn dpad-right" data-dir="right" type="button" aria-label="Move right">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m17 12-7 6V6l7 6Z"/></svg>
+        </button>
+        <button class="dpad-btn dpad-down" data-dir="down" type="button" aria-label="Move down">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 17-6-7h12l-6 7Z"/></svg>
+        </button>
+      </div>
+
+      <div class="utility-panel">
+        <button id="tiltBtn" class="utility-btn" type="button" aria-pressed="false">
+          <span class="utility-icon" aria-hidden="true">↗</span>
+          <span>TILT</span>
+          <i class="state-dot"></i>
+        </button>
+        <button id="swipeHintBtn" class="utility-btn ghost-btn" type="button" aria-label="Show controls help">
+          <span class="utility-icon" aria-hidden="true">?</span>
+          <span>HELP</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
