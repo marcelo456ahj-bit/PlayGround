@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#05070c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="The Hollow Sentinel — a Hollow Knight-inspired single-arena boss trial for phone and tablet.">
+  <title>The Hollow Sentinel</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <canvas id="game" role="img" aria-label="A dark cathedral arena. A small horned knight faces the Hollow Sentinel."></canvas>
+
+  <div id="ui">
+    <div id="hud" class="hidden" aria-live="polite">
+      <div class="hud-left">
+        <div id="masks" class="masks" aria-label="Five health masks"></div>
+        <div class="soul-wrap">
+          <div id="soul" class="soul-orb" aria-label="Soul vessel">
+            <div id="soul-liquid" class="soul-liquid"></div>
+            <div class="soul-shine"></div>
+          </div>
+          <span class="soul-label">SOUL</span>
+        </div>
+      </div>
+
+      <div class="boss-hud">
+        <div class="boss-name">THE HOLLOW SENTINEL</div>
+        <div class="boss-bar">
+          <div id="boss-fill" class="boss-fill"></div>
+          <div class="boss-bar-gloss"></div>
+          <div id="phase-mark" class="phase-mark"></div>
+        </div>
+        <div id="phase-label" class="phase-label">VESSEL OF THE ABYSS</div>
+      </div>
+
+      <button id="pause-btn" class="icon-btn" aria-label="Pause game">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+      </button>
+    </div>
+
+    <div id="touch-controls" aria-hidden="true">
+      <div id="joystick" class="joystick">
+        <div class="joystick-ring"></div>
+        <div class="joystick-tick tick-n"></div><div class="joystick-tick tick-e"></div>
+        <div class="joystick-tick tick-s"></div><div class="joystick-tick tick-w"></div>
+        <div id="stick" class="joystick-knob"></div>
+        <span class="joystick-label">MOVE</span>
+      </div>
+
+      <div class="action-cluster">
+        <button id="btn-focus" class="touch-btn btn-focus" aria-label="Focus soul to heal">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8"/><path d="M16 4v5M16 23v5M4 16h5M23 16h5"/></svg>
+          <span>FOCUS</span>
+        </button>
+        <button id="btn-dash" class="touch-btn btn-dash" aria-label="Dash">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 11h13l-4-4M6 16h17l-5-5M6 21h13l-4 4"/></svg>
+          <span>DASH</span>
+        </button>
+        <button id="btn-jump" class="touch-btn btn-jump" aria-label="Jump">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 19l8-9 8 9M16 10v14"/></svg>
+          <span>JUMP</span>
+        </button>
+        <button id="btn-attack" class="touch-btn btn-attack" aria-label="Nail slash">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 25L24 6l2 2L9 27zM22 5l5 5"/><path d="M5 20c5 0 9 4 9 9"/></svg>
+          <span>SLASH</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="desktop-hints" class="desktop-hints" aria-hidden="true">
+      <span><b>A</b><b>D</b> MOVE</span>
+      <span><b>SPACE</b> JUMP</span>
+      <span><b>J</b> SLASH</span>
+      <span><b>K</b> DASH</span>
+      <span><b>L</b> FOCUS</span>
+      <span><b>W</b>/<b>S</b> AIM</span>
+    </div>
+
+    <div id="title-screen" class="overlay title-screen">
+      <div class="title-vignette"></div>
+      <div class="title-inner">
+        <div class="eyebrow"><i></i><span>A TALE OF THE ABYSS</span><i></i></div>
+        <h1>THE HOLLOW<br><em>SENTINEL</em></h1>
+        <p class="tagline">One arena. No retreat. Steel your nail.</p>
+        <div class="title-rule"><span></span><i></i><span></span></div>
+        <div class="menu">
+          <button id="start-btn" class="button-primary">START</button>
+          <button id="tilt-btn" class="button-ghost">TILT: OFF</button>
+          <button id="sound-btn" class="button-ghost">SOUND: ON</button>
+        </div>
+        <p id="tilt-note" class="tilt-note"></p>
+        <div class="title-legend">
+          <span>SLASH THE VESSEL</span><i></i><span>GATHER SOUL</span><i></i><span>FOCUS TO HEAL</span>
+        </div>
+      </div>
+      <div class="title-foot">
+        <span>A HOLLOW KNIGHT&ndash;INSPIRED TRIAL</span>
+        <span id="best-time">BEST &mdash;</span>
+      </div>
+    </div>
+
+    <div id="pause-screen" class="overlay pause-screen hidden">
+      <div class="panel">
+        <div class="panel-kicker">THE ARENA HOLDS ITS BREATH</div>
+        <h2>PAUSED</h2>
+        <div class="panel-rule"></div>
+        <div class="menu vertical">
+          <button id="resume-btn" class="button-primary">RESUME</button>
+          <button id="pause-tilt-btn" class="button-ghost">TILT: OFF</button>
+          <button id="pause-sound-btn" class="button-ghost">SOUND: ON</button>
+          <button id="restart-btn" class="button-ghost">RESTART TRIAL</button>
+        </div>
+        <p class="panel-foot">The Sentinel waits without mercy.</p>
+      </div>
+    </div>
+
+    <div id="end-screen" class="overlay end-screen hidden">
+      <div class="panel end-panel">
+        <div id="end-kicker" class="panel-kicker">THE ABYSS CLAIMS ANOTHER</div>
+        <h2 id="end-title">YOU DIED</h2>
+        <div class="panel-rule"></div>
+        <p id="end-sub" class="end-sub">The Sentinel remains. Rise, little ghost.</p>
+        <div id="end-stats" class="end-stats"></div>
+        <div class="menu vertical">
+          <button id="retry-btn" class="button-primary">RISE AGAIN</button>
+          <button id="end-sound-btn" class="button-ghost">SOUND: ON</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status"></div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
