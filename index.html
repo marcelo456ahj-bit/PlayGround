@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d1b1e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="Voxel Haven — a pocket-sized voxel survival world with touch controls and optional tilt look." />
+  <title>Voxel Haven — Pocket Survival</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game"></canvas>
+
+    <div id="hud" aria-hidden="true">
+      <div class="topbar">
+        <div class="brand-mini">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m3 7 9 5 9-5M12 12v10" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          <span>Voxel Haven</span>
+        </div>
+        <div class="time-chip" id="timeChip">
+          <span class="time-icon" id="timeIcon"></span>
+          <span id="dayLabel">Day 1</span>
+          <span class="time-sep"></span>
+          <span id="clock">08:24</span>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" id="soundBtn" type="button" aria-label="Toggle sound" title="Sound">
+            <svg class="ico-sound-on" viewBox="0 0 24 24"><path d="M4 9h3l4-4v14l-4-4H4zM16 8.5a5 5 0 0 1 0 7M18.7 6a9 9 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="ico-sound-off" viewBox="0 0 24 24"><path d="M4 9h3l4-4v14l-4-4H4zM16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+          <button class="icon-btn" id="tiltBtn" type="button" aria-label="Toggle tilt look" title="Tilt look">
+            <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 18.5h3M4 8l2.5 2.5L4 13M20 8l-2.5 2.5L20 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="icon-btn" id="pauseBtn" type="button" aria-label="Pause game" title="Pause">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="crosshair" id="crosshair">
+        <div class="crosshair-ring" id="mineRing"></div>
+        <div class="crosshair-dot"></div>
+      </div>
+      <div class="target-label" id="targetLabel"></div>
+
+      <div class="toast" id="toast" role="status"></div>
+
+      <div class="vitals">
+        <div class="stat-row" id="hearts" aria-label="Health"></div>
+        <div class="stat-row hunger-row" id="hunger" aria-label="Hunger"></div>
+      </div>
+
+      <button class="eat-btn" id="eatBtn" type="button" aria-label="Eat an apple">
+        <span class="apple-glyph" aria-hidden="true"></span>
+        <span class="eat-text">Eat</span>
+        <span class="eat-count" id="eatCount">2</span>
+      </button>
+
+      <div class="hotbar-shell">
+        <div class="hotbar" id="hotbar"></div>
+        <div class="hotbar-name" id="hotbarName">Grass Block</div>
+      </div>
+
+      <div class="joystick" id="joystick" aria-hidden="true">
+        <div class="joystick-ring"></div>
+        <div class="joystick-thumb" id="joystickThumb"></div>
+        <span class="joystick-hint">MOVE</span>
+      </div>
+
+      <div class="action-cluster">
+        <button class="round-btn jump-btn" id="jumpBtn" type="button" aria-label="Jump">
+          <svg viewBox="0 0 24 24"><path d="M12 19V6M7 11l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Jump</span>
+        </button>
+        <button class="round-btn place-btn" id="placeBtn" type="button" aria-label="Place block">
+          <svg viewBox="0 0 24 24"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+          <span>Place</span>
+        </button>
+        <button class="round-btn mine-btn" id="mineBtn" type="button" aria-label="Mine or attack">
+          <svg viewBox="0 0 24 24"><path d="M4 20 15.5 8.5M6 6c3-3 7-3 10 0l-2 2c-1.5-1.5-3.5-1.5-5 0zM15 3l6 6M13.5 10.5 21 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Mine</span>
+        </button>
+      </div>
+
+      <div class="desktop-hint" id="desktopHint">
+        <span><b>WASD</b> move</span><i></i><span><b>Mouse</b> look</span><i></i><span><b>Space</b> jump</span><i></i><span><b>LMB</b> mine</span><i></i><span><b>RMB</b> place</span>
+      </div>
+
+      <div class="water-tint" id="waterTint"></div>
+      <div class="damage-flash" id="damageFlash"></div>
+    </div>
+
+    <section id="startScreen" class="overlay start-screen">
+      <div class="start-shade"></div>
+      <div class="start-inner">
+        <div class="eyebrow"><span class="pulse-dot"></span> Pocket survival world</div>
+        <h1 class="logo">VOXEL<span>HAVEN</span></h1>
+        <p class="tagline">Mine, build, and outlast the night.<br>An entire little world in your pocket.</p>
+        <button id="playBtn" class="play-btn" type="button">
+          <span class="play-triangle" aria-hidden="true"></span>
+          <span>Play</span>
+        </button>
+        <div class="start-meta">
+          <span><svg viewBox="0 0 24 24"><path d="M7 2.5h10v19H7z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 18.5h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> Touch ready</span>
+          <span><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> Tilt look</span>
+          <span><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Day-night cycle</span>
+        </div>
+        <div class="start-hint" id="startHint">Tap Play to wake the world</div>
+      </div>
+      <div class="start-badge">Best with headphones</div>
+    </section>
+
+    <section id="pauseScreen" class="overlay modal-screen" hidden>
+      <div class="modal-card">
+        <div class="modal-head">
+          <span class="eyebrow"><span class="pulse-dot"></span> Paused</span>
+          <h2>Take a breath.</h2>
+          <p>The world waits while you do.</p>
+        </div>
+        <div class="modal-stats">
+          <div><span id="statMined">0</span><small>blocks mined</small></div>
+          <div><span id="statPlaced">0</span><small>blocks placed</small></div>
+          <div><span id="statNights">0</span><small>nights survived</small></div>
+        </div>
+        <div class="setting-list">
+          <button class="setting-row" id="soundSetting" type="button">
+            <span class="setting-icon"><svg viewBox="0 0 24 24"><path d="M4 9h3l4-4v14l-4-4H4zM16 8.5a5 5 0 0 1 0 7M18.7 6a9 9 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="setting-copy"><b>Sound</b><small>Digs, footsteps and the night</small></span>
+            <span class="switch" id="soundSwitch" aria-hidden="true"><i></i></span>
+          </button>
+          <button class="setting-row" id="tiltSetting" type="button">
+            <span class="setting-icon"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 18.5h3M4 8l2.5 2.5L4 13M20 8l-2.5 2.5L20 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+            <span class="setting-copy"><b>Tilt to look</b><small id="tiltSettingHint">Optional accelerometer camera</small></span>
+            <span class="switch" id="tiltSwitch" aria-hidden="true"><i></i></span>
+          </button>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" id="newWorldBtn" type="button">New world</button>
+          <button class="primary-btn" id="resumeBtn" type="button">Resume</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="deathScreen" class="overlay modal-screen death-screen" hidden>
+      <div class="death-card">
+        <span class="eyebrow danger"><span class="pulse-dot"></span> The world goes quiet</span>
+        <h2>You didn't make it.</h2>
+        <p id="deathCopy">The dark got the better of you. But every world gets another sunrise.</p>
+        <div class="death-stats">
+          <div><span id="deathDay">Day 1</span><small>reached</small></div>
+          <div><span id="deathMined">0</span><small>blocks mined</small></div>
+        </div>
+        <button class="primary-btn wide" id="respawnBtn" type="button">Respawn at dawn</button>
+      </div>
+    </section>
+
+    <div id="toastLayer" class="toast-layer" aria-live="polite"></div>
+    <div id="boot" class="boot">
+      <div class="boot-cube" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <span>Shaping the world…</span>
+    </div>
+  </div>
+
+  <script src="assets/three.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
