@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#05090b" />
+  <meta name="description" content="The Hollow Warden — a hand-drawn boss duel for phones, tablets, and desktop." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>The Hollow Warden</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23060d0e'/%3E%3Cpath d='M32 8c11 0 18 7 18 17 0 5-2 9-5 12l4 8-10 15c-4 6-10 6-14 0L15 45l4-8c-3-3-5-7-5-12 0-10 7-17 18-17Z' fill='%23e8e2cf'/%3E%3Cpath d='M22 25c4-4 8-4 10 0-2 5-8 5-10 0ZM42 25c-4-4-8-4-10 0 2 5 8 5 10 0Z' fill='%23060d0e'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="app" class="app">
+    <canvas id="game" aria-label="The Hollow Warden boss fight arena"></canvas>
+    <div class="scene-vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header id="hud" class="hud" aria-hidden="true">
+      <div class="boss-hud">
+        <div class="boss-heading">
+          <span id="phaseReadout" class="boss-phase">PHASE I</span>
+          <h1 class="boss-name">THE HOLLOW WARDEN</h1>
+        </div>
+        <div class="boss-bar" role="progressbar" aria-label="Warden health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div id="bossGhost" class="boss-bar-ghost"></div>
+          <div id="bossFill" class="boss-bar-fill"></div>
+          <div class="boss-bar-gloss"></div>
+          <div class="boss-bar-notches" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button id="tiltBtn" class="icon-btn" type="button" aria-label="Toggle tilt controls" aria-pressed="false" title="Tilt controls">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7.5" y="2.8" width="9" height="18.4" rx="2.3"/><path d="M9.8 5.2h4.4M12 18.7h.01"/><path d="M3.5 9.5a7.5 7.5 0 0 1 0 5M20.5 9.5a7.5 7.5 0 0 0 0 5"/></svg>
+        </button>
+        <button id="soundBtn" class="icon-btn" type="button" aria-label="Toggle sound" aria-pressed="true" title="Sound">
+          <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h3.5L13 4.6v14.8L7.5 15H4z"/><path d="M16.2 8.2a5.4 5.4 0 0 1 0 7.6M18.9 5.3a9.2 9.2 0 0 1 0 13.4"/></svg>
+          <svg class="icon-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h3.5L13 4.6v14.8L7.5 15H4z"/><path d="m16.4 9 4.2 4.2m0-4.2-4.2 4.2"/></svg>
+        </button>
+        <button id="pauseBtn" class="icon-btn" type="button" aria-label="Pause" title="Pause">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13M16 5.5v13"/></svg>
+        </button>
+      </div>
+
+      <div class="player-hud">
+        <div id="masks" class="masks" aria-label="Knight health">
+          <span class="mask"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2.2c5.1 0 8.5 3.4 8.5 8.3 0 2.1-.8 3.9-2.1 5.3l1.7 3.6-4.9 8.1c-1.9 3-4.5 3-6.4 0l-4.9-8.1 1.7-3.6a7.7 7.7 0 0 1-2.1-5.3c0-4.9 3.4-8.3 8.5-8.3Z"/></svg></span>
+          <span class="mask"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2.2c5.1 0 8.5 3.4 8.5 8.3 0 2.1-.8 3.9-2.1 5.3l1.7 3.6-4.9 8.1c-1.9 3-4.5 3-6.4 0l-4.9-8.1 1.7-3.6a7.7 7.7 0 0 1-2.1-5.3c0-4.9 3.4-8.3 8.5-8.3Z"/></svg></span>
+          <span class="mask"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2.2c5.1 0 8.5 3.4 8.5 8.3 0 2.1-.8 3.9-2.1 5.3l1.7 3.6-4.9 8.1c-1.9 3-4.5 3-6.4 0l-4.9-8.1 1.7-3.6a7.7 7.7 0 0 1-2.1-5.3c0-4.9 3.4-8.3 8.5-8.3Z"/></svg></span>
+          <span class="mask"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2.2c5.1 0 8.5 3.4 8.5 8.3 0 2.1-.8 3.9-2.1 5.3l1.7 3.6-4.9 8.1c-1.9 3-4.5 3-6.4 0l-4.9-8.1 1.7-3.6a7.7 7.7 0 0 1-2.1-5.3c0-4.9 3.4-8.3 8.5-8.3Z"/></svg></span>
+          <span class="mask"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M14 2.2c5.1 0 8.5 3.4 8.5 8.3 0 2.1-.8 3.9-2.1 5.3l1.7 3.6-4.9 8.1c-1.9 3-4.5 3-6.4 0l-4.9-8.1 1.7-3.6a7.7 7.7 0 0 1-2.1-5.3c0-4.9 3.4-8.3 8.5-8.3Z"/></svg></span>
+        </div>
+        <div class="soul-wrap">
+          <div id="soulOrb" class="soul-orb" role="meter" aria-label="Soul" aria-valuemin="0" aria-valuemax="99" aria-valuenow="0">
+            <div id="soulFill" class="soul-fill"></div>
+            <div class="soul-glint"></div>
+          </div>
+          <span id="healHint" class="heal-hint">HOLD TO FOCUS</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="menu" class="overlay menu-overlay visible">
+      <div class="menu-card">
+        <p class="kicker"><span></span> THE SUNKEN COURT <span></span></p>
+        <h1 class="title">
+          <span>THE HOLLOW</span>
+          <strong>WARDEN</strong>
+        </h1>
+        <p class="subtitle">A duel at the end of the pale road.</p>
+        <p class="lede">The old keeper has not left his throne for an age. Take up your nail, little shade. Only one of you will see the dawn.</p>
+
+        <button id="startBtn" class="start-btn" type="button">
+          <span class="start-btn-glow"></span>
+          <span class="start-btn-label">Start</span>
+          <span class="start-btn-nail" aria-hidden="true"></span>
+        </button>
+
+        <div class="menu-options">
+          <button id="menuTiltBtn" class="text-btn" type="button" aria-pressed="false">
+            <span class="dot"></span><span class="label">Tilt controls</span><span class="state">OFF</span>
+          </button>
+          <button id="menuSoundBtn" class="text-btn" type="button" aria-pressed="true">
+            <span class="dot"></span><span class="label">Sound</span><span class="state">ON</span>
+          </button>
+        </div>
+
+        <div class="controls-strip">
+          <div class="control-set">
+            <span class="control-set-label">KEYBOARD</span>
+            <span><kbd>A</kbd><kbd>D</kbd> move</span>
+            <span><kbd>SPACE</kbd> jump</span>
+            <span><kbd>J</kbd> slash</span>
+            <span><kbd>K</kbd> dash</span>
+            <span><kbd>L</kbd> focus</span>
+          </div>
+          <div class="control-set touch-copy">
+            <span class="control-set-label">TOUCH</span>
+            <span>Left thumb to move</span>
+            <span>Right thumb to slash, leap &amp; dash</span>
+            <span>Tilt is optional</span>
+          </div>
+        </div>
+
+        <p id="bestTime" class="best-time">No warden has fallen yet.</p>
+      </div>
+      <p class="menu-footnote">Headphones recommended <span>·</span> A single, uninterrupted duel</p>
+    </section>
+
+    <div id="intro" class="intro" aria-hidden="true">
+      <p class="intro-kicker">ARENA I <span>·</span> THE SUNKEN COURT</p>
+      <h2>THE HOLLOW WARDEN</h2>
+      <p>KEEPER OF THE DYING LIGHT</p>
+    </div>
+
+    <section id="pause" class="overlay pause-overlay" aria-hidden="true">
+      <div class="pause-card">
+        <p class="kicker"><span></span> A MOMENT'S RESPITE <span></span></p>
+        <h2>PAUSED</h2>
+        <p>The court holds its breath.</p>
+        <div class="pause-actions">
+          <button id="resumeBtn" class="start-btn small" type="button"><span class="start-btn-glow"></span><span class="start-btn-label">Resume</span></button>
+          <button id="restartBtn" class="ghost-btn" type="button">Restart duel</button>
+          <button id="quitBtn" class="ghost-btn" type="button">Return to the gate</button>
+        </div>
+        <div class="pause-toggles">
+          <button id="pauseTiltBtn" class="text-btn" type="button" aria-pressed="false"><span class="dot"></span><span class="label">Tilt controls</span><span class="state">OFF</span></button>
+          <button id="pauseSoundBtn" class="text-btn" type="button" aria-pressed="true"><span class="dot"></span><span class="label">Sound</span><span class="state">ON</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="overlay result-overlay" aria-hidden="true">
+      <div class="result-card">
+        <p id="resultKicker" class="kicker"><span></span> THE DUEL ENDS <span></span></p>
+        <h2 id="resultTitle">THE WARDEN FALLS</h2>
+        <p id="resultCopy" class="result-copy">The pale court is silent once more.</p>
+        <div class="result-stats">
+          <div><span>TIME</span><strong id="resultTime">00:00</strong></div>
+          <div><span>HITS TAKEN</span><strong id="resultHits">0</strong></div>
+          <div><span>SOUL SPENT</span><strong id="resultSoul">0</strong></div>
+        </div>
+        <div class="result-actions">
+          <button id="retryBtn" class="start-btn" type="button"><span class="start-btn-glow"></span><span class="start-btn-label">Retry</span></button>
+          <button id="menuBtn" class="ghost-btn" type="button">Return to the gate</button>
+        </div>
+        <p id="recordLine" class="record-line"></p>
+      </div>
+    </section>
+
+    <div id="touchControls" class="touch-controls" aria-hidden="true">
+      <div id="stickZone" class="stick-zone" aria-label="Movement joystick">
+        <div class="stick-ring">
+          <span class="stick-tick tick-n"></span><span class="stick-tick tick-e"></span><span class="stick-tick tick-s"></span><span class="stick-tick tick-w"></span>
+          <div id="stickKnob" class="stick-knob"><span></span></div>
+        </div>
+        <span class="stick-caption">MOVE</span>
+      </div>
+      <div class="action-pad">
+        <button class="action-btn action-focus" type="button" data-action="heal" aria-label="Focus and heal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2c3.9 2.6 6.1 5.3 6.1 8.6a6.1 6.1 0 1 1-12.2 0c0-3.3 2.2-6 6.1-8.6Z"/><path d="M9.5 12.8c.8-1.6 2.1-2.5 3.8-2.8"/></svg>
+          <span>FOCUS</span>
+          <i class="cooldown-ring"></i>
+        </button>
+        <button class="action-btn action-jump" type="button" data-action="jump" aria-label="Jump">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6M12 8v11"/></svg>
+          <span>JUMP</span>
+        </button>
+        <button class="action-btn action-dash" type="button" data-action="dash" aria-label="Dash">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h9.2M4 12h13.5M4 16h9.2"/><path d="m15.2 5.5 4.6 6.5-4.6 6.5"/></svg>
+          <span>DASH</span>
+          <i class="cooldown-ring"></i>
+        </button>
+        <button class="action-btn action-slash" type="button" data-action="attack" aria-label="Slash">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.7 3.1 8.5 14.3l2.2 2.2L21.9 5.3l-1-2.6z"/><path d="m7.2 15.6-3 3M5 12.7l-2.3.5"/></svg>
+          <span>SLASH</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <div id="rotateHint" class="rotate-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7.2" y="2.6" width="9.6" height="18.8" rx="2.2"/><path d="M4 8a9 9 0 0 1 2.4-3.2M3.2 5v3.4h3.3M20 16a9 9 0 0 1-2.4 3.2M20.8 19v-3.4h-3.3"/></svg>
+      <span>For the widest arena, turn your device sideways</span>
+    </div>
+
+    <noscript><div class="noscript">The Hollow Warden needs JavaScript to draw its court.</div></noscript>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
